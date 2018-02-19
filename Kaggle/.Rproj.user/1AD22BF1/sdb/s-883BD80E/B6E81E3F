@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#### loading packages\nlibrary(caret)\nlibrary(corrplot)\n\n# 1. load dataset\ntrain_data <- read.csv('house_price_data/train.csv')\ntest_data <- read.csv('house_price_data/test.csv')\nstr(test_data)\nhead(train_data)\nhead(test_data)\n\n#### check the data\ndim(train_data)\n\n## 2. explore data\nstr(train_data)\nsummary(train_data)\n\n#### correlation\ntrain_corr = cor(train_data[, c('SalePrice', 'X1stFlrSF', 'X2ndFlrSF', 'BedroomAbvGr', 'KitchenAbvGr')],\n                 use = \"complete.obs\")\ncorrplot(train_corr)\n\n# 3. clean data\n\n# Select only first 1000 rows first\ntrain_data1000 = train_data[1:1000,]\n\n# 4. train model: Random Forest\nset.seed(1234)\ntree_model <- train(SalePrice ~ X1stFlrSF + X2ndFlrSF + BedroomAbvGr + KitchenAbvGr,\n                    data = train_data1000, \n                    method = \"cforest\",\n                    metric = \"RMSE\",\n                    trControl = trainControl(method = \"repeatedcv\",\n                                             number = 5,\n                                             repeats = 1))\n\n# Print model to see the CV result\ntree_model\n\n#### Optimize using Grid Search\nmy_grid_search <- expand.grid(mtry = c(3:5)) ## define grid search\n\ntree_model <- train(SalePrice ~ X1stFlrSF + X2ndFlrSF + BedroomAbvGr + KitchenAbvGr,\n                    data = train_data1000, \n                    method = \"cforest\",\n                    metric = \"RMSE\",\n                    tuneGrid = my_grid_search, # tuneGrid \n                    trControl = trainControl(method = \"cv\",  \n                                             number = 5,  \n                                             search = \"grid\", # grid search \n                                             verboseIter = T))\n\n# Print model\ntree_model\n\n#### Optimize using Random Search\ntree_model_random <- train(SalePrice ~ X1stFlrSF + X2ndFlrSF + BedroomAbvGr + KitchenAbvGr,  \n                  data = train_data1000, \n                  method = \"cforest\",  \n                  metric = \"RMSE\", \n                  tuneLength = 5, #tune length \n                  trControl = trainControl(method = \"cv\",  \n                                           number = 5,  \n                                           search = \"random\", # random search \n                                           verboseIter = T))\n\n# Print model\ntree_model_random\n\n#### Prepare test data\nsummary(test_data)\n\n# 5. get prediction\nprediction <- predict(tree_model_random, newdata = test_data, type = \"raw\")\nlength(prediction)\n\n# 6. export prediction\nanswers = data.frame(Id = test_data$Id, SalePrice=prediction)\nanswers\nwrite.csv(answers, file=\"answers-workshop2.csv\", row.names = FALSE)\n",
+    "created" : 1519031990779.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3249769480",
+    "id" : "B6E81E3F",
+    "lastKnownWriteTime" : 1519016585,
+    "last_content_update" : 1519016585,
+    "path" : "C:/Users/tan/Desktop/Kaggle/workshop2-houseprice.R",
+    "project_path" : "workshop2-houseprice.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

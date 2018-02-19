@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#### loading packages\nlibrary(caret)\nlibrary(corrplot)\n\n# 1. load dataset\ntrain_data <- read.csv('house_price_data/train.csv')\ntest_data <- read.csv('house_price_data/test.csv')\nstr(test_data)\nhead(train_data)\nhead(test_data)\n\n#### check the data\ndim(train_data)\n\n## 2. explore data\nstr(train_data)\nsummary(train_data)\n\n#### correlation\ntrain_corr = cor(train_data[, c('SalePrice', 'X1stFlrSF', 'X2ndFlrSF', 'BedroomAbvGr', 'KitchenAbvGr')],\n                 use = \"complete.obs\")\ncorrplot(train_corr)\n\n# 3. clean data\n\n# Select only first 1000 rows first\ntrain_data1000 = train_data[1:1000,]\n\n\n",
+    "created" : 1519033336608.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3081421162",
+    "id" : "8CB1EEBC",
+    "lastKnownWriteTime" : 3904937673717972992,
+    "last_content_update" : 1519033383786,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
